@@ -1,47 +1,47 @@
 package com.web.dictionaryservice.dictionaryservicewebimplementation.configs.jwt;
 
+import java.util.Date;
+
 import com.web.dictionaryservice.dictionaryservicewebimplementation.service.UserDetailsImpl;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Component;
 
-import java.util.Date;
+import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.SignatureAlgorithm;
 
 @Component
 public class JwtUtils {
 
-    @Value("${app.jwtSecret}")
-    private String jwtSecret;
+	@Value("${app.jwtSecret}")
+	private String jwtSecret;
 
-    @Value("${app.jwtExpirationMs}")
-    private int jwtExpirationMs;
+	@Value("${app.jwtExpirationMs}")
+	private int jwtExpirationMs;
 
-    public String generateJwtToken(Authentication authentication) {
+	public String generateJwtToken(Authentication authentication) {
 
-        UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
+		UserDetailsImpl userPrincipal = (UserDetailsImpl) authentication.getPrincipal();
 
-        return Jwts.builder().setSubject((userPrincipal.getUsername())).setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
-                .signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
-    }
+		return Jwts.builder().setSubject((userPrincipal.getUsername())).setIssuedAt(new Date())
+				.setExpiration(new Date((new Date()).getTime() + jwtExpirationMs))
+				.signWith(SignatureAlgorithm.HS512, jwtSecret).compact();
+	}
 
-    public boolean validateJwtToken(String jwt) {
-        try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwt);
-            return true;
-        } catch (MalformedJwtException | IllegalArgumentException e) {
-            System.err.println(e.getMessage());
-        }
+	public boolean validateJwtToken(String jwt) {
+		try {
+			Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwt);
+			return true;
+		} catch (MalformedJwtException | IllegalArgumentException e) {
+			System.err.println(e.getMessage());
+		}
 
-        return false;
-    }
+		return false;
+	}
 
-    public String getUserNameFromJwtToken(String jwt) {
-        return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwt).getBody().getSubject();
-    }
+	public String getUserNameFromJwtToken(String jwt) {
+		return Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(jwt).getBody().getSubject();
+	}
 
 }
-

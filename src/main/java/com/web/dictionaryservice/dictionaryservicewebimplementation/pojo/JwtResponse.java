@@ -5,7 +5,6 @@ import lombok.Setter;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.UUID;
 
 @Getter
 @Setter
@@ -13,14 +12,16 @@ public class JwtResponse {
 	
 	private String token;
 	private String type = "Bearer";
-	private UUID id;
+	private Long id;
 	private String username;
+	private String email;
 	private List<String> roles;
 	
-	public JwtResponse(String token, UUID id, String username, List<String> roles) {
+	public JwtResponse(String token, Long id, String username, String email, List<String> roles) {
 		this.token = token;
 		this.id = id;
 		this.username = username;
+		this.email = email;
 		this.roles = roles;
 	}
 }

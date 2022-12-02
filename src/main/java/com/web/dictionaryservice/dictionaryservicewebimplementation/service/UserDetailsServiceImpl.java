@@ -1,6 +1,6 @@
 package com.web.dictionaryservice.dictionaryservicewebimplementation.service;
 
-import com.web.dictionaryservice.dictionaryservicewebimplementation.model.User;
+import com.web.dictionaryservice.dictionaryservicewebimplementation.models.User;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -12,15 +12,14 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class UserDetailsServiceImpl implements UserDetailsService {
 
-    @Autowired
-    UserRepository userRepository;
-
-    @Override
-    @Transactional
-    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
-        return UserDetailsImpl.build(user);
-    }
+	@Autowired
+	UserRepository userRepository;
+	
+	@Override
+	@Transactional
+	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+		User user = userRepository.findByUsername(username)
+				.orElseThrow(() -> new UsernameNotFoundException("User Not Found with username: " + username));
+		return UserDetailsImpl.build(user);
+	}
 }
-
