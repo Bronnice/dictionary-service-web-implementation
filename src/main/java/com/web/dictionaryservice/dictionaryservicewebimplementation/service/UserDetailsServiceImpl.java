@@ -1,6 +1,6 @@
 package com.web.dictionaryservice.dictionaryservicewebimplementation.service;
 
-import com.web.dictionaryservice.dictionaryservicewebimplementation.models.User;
+import com.web.dictionaryservice.dictionaryservicewebimplementation.model.User;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;

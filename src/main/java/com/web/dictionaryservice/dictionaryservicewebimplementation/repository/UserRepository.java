@@ -2,7 +2,7 @@ package com.web.dictionaryservice.dictionaryservicewebimplementation.repository;
 
 import java.util.Optional;
 
-import com.web.dictionaryservice.dictionaryservicewebimplementation.models.User;
+import com.web.dictionaryservice.dictionaryservicewebimplementation.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

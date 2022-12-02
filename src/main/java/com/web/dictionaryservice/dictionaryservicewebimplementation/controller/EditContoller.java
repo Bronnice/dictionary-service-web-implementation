@@ -1,4 +1,4 @@
-package com.web.dictionaryservice.dictionaryservicewebimplementation.controllers;
+package com.web.dictionaryservice.dictionaryservicewebimplementation.controller;
 
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.RequestMapping;

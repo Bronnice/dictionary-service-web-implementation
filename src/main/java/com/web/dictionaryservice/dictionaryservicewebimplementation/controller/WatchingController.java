@@ -1,6 +1,6 @@
-package com.web.dictionaryservice.dictionaryservicewebimplementation.controllers;
+package com.web.dictionaryservice.dictionaryservicewebimplementation.controller;
 
-import com.web.dictionaryservice.dictionaryservicewebimplementation.models.Dictionary;
+import com.web.dictionaryservice.dictionaryservicewebimplementation.model.Dictionary;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.repository.DictionaryRepository;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.service.AppError;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class WatchingController {
     @GetMapping(path = "/{id}")
     public ResponseEntity<?> getDictionaryById(@PathVariable(value = "id") Dictionary dictionary){
         try{
-            Dictionary newDictionary = dictionaryRepository.findById(String.valueOf(dictionary.getId())).orElseThrow();
+            Dictionary newDictionary = dictionaryRepository.findById(dictionary.getId()).orElseThrow();
             return new ResponseEntity<>(newDictionary, HttpStatus.OK);
         }catch(Exception e){
             return new ResponseEntity<>(new AppError(HttpStatus.NOT_FOUND.value(),

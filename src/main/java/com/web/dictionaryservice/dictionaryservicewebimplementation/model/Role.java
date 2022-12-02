@@ -1,4 +1,4 @@
-package com.web.dictionaryservice.dictionaryservicewebimplementation.models;
+package com.web.dictionaryservice.dictionaryservicewebimplementation.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,7 +14,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "roles")
+@Table(name = "role")
 @Getter
 @Setter
 @NoArgsConstructor

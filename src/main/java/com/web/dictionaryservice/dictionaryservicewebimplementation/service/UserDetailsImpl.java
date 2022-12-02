@@ -4,7 +4,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.web.dictionaryservice.dictionaryservicewebimplementation.models.User;
+import com.web.dictionaryservice.dictionaryservicewebimplementation.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.security.core.GrantedAuthority;

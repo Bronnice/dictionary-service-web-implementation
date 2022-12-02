@@ -1,4 +1,4 @@
-package com.web.dictionaryservice.dictionaryservicewebimplementation.models;
+package com.web.dictionaryservice.dictionaryservicewebimplementation.model;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,6 +36,7 @@ public class User {
 	private String username;
 	private String email;
 	private String password;
+
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "user_roles",
 				joinColumns = @JoinColumn(name = "user_id"),

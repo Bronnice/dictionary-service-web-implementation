@@ -1,4 +1,4 @@
-package com.web.dictionaryservice.dictionaryservicewebimplementation.controllers;
+package com.web.dictionaryservice.dictionaryservicewebimplementation.controller;
 
 import java.util.HashSet;
 import java.util.List;
@@ -6,9 +6,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import com.web.dictionaryservice.dictionaryservicewebimplementation.configs.jwt.JwtUtils;
-import com.web.dictionaryservice.dictionaryservicewebimplementation.models.ERole;
-import com.web.dictionaryservice.dictionaryservicewebimplementation.models.Role;
-import com.web.dictionaryservice.dictionaryservicewebimplementation.models.User;
+import com.web.dictionaryservice.dictionaryservicewebimplementation.model.ERole;
+import com.web.dictionaryservice.dictionaryservicewebimplementation.model.Role;
+import com.web.dictionaryservice.dictionaryservicewebimplementation.model.User;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.pojo.JwtResponse;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.pojo.LoginRequest;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.pojo.MessageResponse;
