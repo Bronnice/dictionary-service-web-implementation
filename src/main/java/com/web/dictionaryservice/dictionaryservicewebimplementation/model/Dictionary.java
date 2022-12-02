@@ -17,6 +17,7 @@ public class Dictionary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    ///TODO Remake for complex keys
     private String key;
 
     @JoinTable(name = "users", joinColumns = {@JoinColumn(name = "user_id")})

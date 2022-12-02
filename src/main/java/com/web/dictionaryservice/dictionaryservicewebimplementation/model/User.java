@@ -17,7 +17,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-
+///TODO Split for api and client
 @Entity
 @Table(name = "users",
 		uniqueConstraints = {
@@ -28,7 +28,7 @@ import javax.persistence.UniqueConstraint;
 @Setter
 @NoArgsConstructor
 public class User {
-	
+	///TODO Add fields validation
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
