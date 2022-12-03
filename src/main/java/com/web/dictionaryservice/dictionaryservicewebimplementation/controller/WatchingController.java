@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+///TODO Put logic into service
 @RestController
 @RequestMapping("/api/")
 @CrossOrigin(origins = "*", maxAge = 3600)
