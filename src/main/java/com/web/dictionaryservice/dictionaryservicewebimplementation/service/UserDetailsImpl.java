@@ -2,6 +2,7 @@ package com.web.dictionaryservice.dictionaryservicewebimplementation.service;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import com.web.dictionaryservice.dictionaryservicewebimplementation.model.User;

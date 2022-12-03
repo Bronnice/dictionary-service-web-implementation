@@ -6,17 +6,10 @@ import lombok.Setter;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
+
 ///TODO Split for api and client
 @Entity
 @Table(name = "users",
@@ -28,7 +21,7 @@ import javax.persistence.UniqueConstraint;
 @Setter
 @NoArgsConstructor
 public class User {
-	///TODO Add fields validation
+	///TODO Make it as UUID
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
@@ -39,8 +32,8 @@ public class User {
 
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "user_roles",
-				joinColumns = @JoinColumn(name = "user_id"),
-				inverseJoinColumns = @JoinColumn(name = "role_id"))
+				joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
+				inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"))
 	private Set<Role> roles = new HashSet<>();
 
 	public User(String username, String email, String password) {

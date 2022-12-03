@@ -2,9 +2,9 @@ package com.web.dictionaryservice.dictionaryservicewebimplementation.pojo;
 
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.UUID;
 
 @Getter
 @Setter

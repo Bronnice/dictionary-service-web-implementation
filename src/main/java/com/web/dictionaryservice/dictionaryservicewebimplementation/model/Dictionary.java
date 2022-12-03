@@ -6,31 +6,27 @@ import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
-@Table(name = "dictionary", uniqueConstraints = {
-        @UniqueConstraint(columnNames = "key")
-})
+@Table(name = "dictionary")
 @Getter
 @NoArgsConstructor
 public class Dictionary {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    ///TODO Remake for complex keys
-    private String key;
 
-    @JoinTable(name = "users", joinColumns = {@JoinColumn(name = "user_id")})
-    private long user_id;
+    @JoinTable(name = "users", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")})
+    private UUID user_id;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "dictionary_values",
+    @JoinTable(name = "keys_in_dictionary",
             joinColumns = @JoinColumn(name = "dictionary_id", referencedColumnName = "id"),
-            inverseJoinColumns = @JoinColumn(name = "value_id"))
-    private List<Value> values = new ArrayList<>();
+            inverseJoinColumns = @JoinColumn(name = "key_id", referencedColumnName = "id"))
+    private List<Key> keys = new ArrayList<>();
 
-    public Dictionary(String key, long user_id) {
-        this.key = key;
+    public Dictionary(UUID user_id) {
         this.user_id = user_id;
     }
 }
