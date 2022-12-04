@@ -1,4 +1,4 @@
-package com.web.dictionaryservice.dictionaryservicewebimplementation.service;
+package com.web.dictionaryservice.dictionaryservicewebimplementation.pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
