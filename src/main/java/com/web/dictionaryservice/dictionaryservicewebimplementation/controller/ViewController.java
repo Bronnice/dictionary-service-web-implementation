@@ -16,30 +16,31 @@ import org.springframework.web.bind.annotation.*;
 public class ViewController {
     @Autowired
     private DictionaryRepository dictionaryRepository;
+    @Autowired
     ViewService viewService;
 
     @GetMapping(path = "/{user_id}/dictionaries")
-    public ResponseEntity<?> getAllDictionaries(@PathVariable(value = "user_id")User user){
-        return viewService.getAllDictionaries(user);
+    public ResponseEntity<?> getAllDictionaries(@PathVariable(value = "user_id")long user_id){
+        return viewService.getAllDictionaries(user_id);
     }
 
     @GetMapping(path = "/{user_id}/dictionaries/{dictionary_id}")
-    public ResponseEntity<?> getDictionaryById(@PathVariable(value = "user_id") User user, @PathVariable(value = "dictionary_id") Dictionary dictionary){
-        return viewService.getDictionaryById(user, dictionary);
+    public ResponseEntity<?> getDictionaryById(@PathVariable(value = "user_id") long user_id, @PathVariable(value = "dictionary_id") long dictionary_id){
+        return viewService.getDictionaryById(user_id, dictionary_id);
     }
 
-    @GetMapping(path = "/{user_id}/dictionaries/{dictionary_id}/{key}")
-    public ResponseEntity<?> findValueByKey(@PathVariable(value = "user_id") User user,
-                                        @PathVariable(value = "dictionary_id") Dictionary dictionary,
-                                        @PathVariable(value = "key") Key key){
-        return viewService.findValueByKey(user, dictionary, key);
+    @GetMapping(path = "/{user_id}/dictionaries/{dictionary_id}/{key_id}")
+    public ResponseEntity<?> findValueByKey(@PathVariable(value = "user_id") long userId,
+                                            @PathVariable(value = "dictionary_id") long dictionaryId,
+                                            @PathVariable(value = "key") long keyId){
+        return viewService.findValueByKey(userId, dictionaryId, keyId);
     }
 
-    @GetMapping(path = "/{user_id}/dictionaries/{dictionary_id}/{key}/delete/{value_id}")
-    public ResponseEntity<?> deleteValueByKey(@PathVariable(value = "user_id") User user,
-                                            @PathVariable(value = "dictionary_id") Dictionary dictionary,
-                                            @PathVariable(value = "key") Key key,
-                                              @PathVariable(value = "value_id") Value value){
-        return viewService.deleteValueByKey(user, dictionary, key, value);
-    }
+//    @PostMapping(path = "/{user_id}/dictionaries/{dictionary_id}/{key}/delete/{value_id}")
+//    public ResponseEntity<?> deleteValueByKey(@PathVariable(value = "user_id") long user_id,
+//                                            @PathVariable(value = "dictionary_id") long dictionary_id,
+//                                            @PathVariable(value = "key") String key,
+//                                              @PathVariable(value = "value_id") Value value){
+//        return viewService.deleteValueByKey(user_id, dictionary_id, key, value);
+//    }
 }

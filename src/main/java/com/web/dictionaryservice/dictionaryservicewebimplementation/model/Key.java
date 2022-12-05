@@ -6,7 +6,9 @@ import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "keys", uniqueConstraints = {
@@ -25,7 +27,7 @@ public class Key {
     @JoinTable(name = "key_value",
             joinColumns = @JoinColumn(name = "key_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "value_id", referencedColumnName = "id"))
-    private List<Value> values = new ArrayList<>();
+    private Set<Value> values = new HashSet<>();
 
     public Key(String key) {
         this.key = key;

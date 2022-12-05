@@ -3,13 +3,13 @@ package com.web.dictionaryservice.dictionaryservicewebimplementation.Validation;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.pojo.SignupRequest;
 import org.springframework.http.HttpStatus;
 
-import java.util.function.Function;
 import java.util.function.Predicate;
 
 import static com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.ValidationResult.invalid;
 import static com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.ValidationResult.valid;
 
-public interface SignUpValidator extends Function<SignupRequest, ValidationResult> {
+public interface SignUpValidator extends Validator<SignupRequest>{
+
     static SignUpValidator holds(Predicate<SignupRequest> predicate, String message){
         return request -> predicate.test(request) ? valid() : invalid(message);
     }
@@ -35,7 +35,7 @@ public interface SignUpValidator extends Function<SignupRequest, ValidationResul
     }
 
     static SignUpValidator emailLength() {
-        return holds(request -> request.getEmail().trim().length() < 20, HttpStatus.BAD_REQUEST.value() + " Email is too long");
+        return holds(request -> request.getEmail().trim().length() < 50, HttpStatus.BAD_REQUEST.value() + " Email is too long");
     }
 
     static SignUpValidator emailIsNotEmpty() {
@@ -57,7 +57,7 @@ public interface SignUpValidator extends Function<SignupRequest, ValidationResul
 
     default SignUpValidator and(SignUpValidator other) {
         return customer -> {
-            final ValidationResult result = this.apply(customer);
+            final ValidationResult result = apply(customer);
             return result.getIsValid() ? other.apply(customer) : result;
         };
     }

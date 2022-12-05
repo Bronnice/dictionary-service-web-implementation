@@ -4,8 +4,7 @@ import com.web.dictionaryservice.dictionaryservicewebimplementation.model.Dictio
 import com.web.dictionaryservice.dictionaryservicewebimplementation.model.Key;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.model.User;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.model.Value;
-import com.web.dictionaryservice.dictionaryservicewebimplementation.pojo.AppError;
-import com.web.dictionaryservice.dictionaryservicewebimplementation.pojo.MessageResponse;
+import com.web.dictionaryservice.dictionaryservicewebimplementation.pojo.*;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.repository.DictionaryRepository;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.repository.KeyRepository;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.repository.UserRepository;
@@ -15,52 +14,57 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.springframework.http.ResponseEntity.badRequest;
-
+///TODO Sane validation
 @Service
-public class ViewService {
+public class CreateService {
 
     @Autowired
-    private DictionaryRepository dictionaryRepository;
+    UserRepository userRepository;
     @Autowired
-    private UserRepository userRepository;
+    DictionaryRepository dictionaryRepository;
     @Autowired
-    private KeyRepository keyRepository;
+    KeyRepository keyRepository;
     @Autowired
-    private ValueRepository valueRepository;
+    ValueRepository valueRepository;
 
-    public ResponseEntity<?> getAllDictionaries(long userId) {
+    public ResponseEntity<?> createDictionary(User user, DictionaryRequest dictionaryRequest){
+        if (!userRepository.existsById(user.getId()))
+            return new ResponseEntity<>(new AppError(HttpStatus.NOT_FOUND.value(), "User not found"), HttpStatus.NOT_FOUND);
 
-        if (!userRepository.existsById(userId))
-            return ResponseEntity.badRequest().body(new MessageResponse(HttpStatus.NOT_FOUND.value() + " User not found"));
+        Dictionary dictionary = new Dictionary(dictionaryRequest.getName(), user.getId());
+        dictionaryRepository.save(dictionary);
 
-        List<Dictionary> tempDic = new ArrayList<>();
-        for (Dictionary item : dictionaryRepository.findAll()) {
-            if(item.getUser_id().equals(userId))
-                tempDic.add(item);
-        }
-
-        return new ResponseEntity<>(tempDic, HttpStatus.OK);
+        return ResponseEntity.ok(new MessageResponse("Dictionary CREATED"));
     }
 
-    public ResponseEntity<?> getDictionaryById(long userId, long dictionaryId) {
+
+    public ResponseEntity<?> createKey(long userId, long dictionaryId, KeyRequest keyRequest) {
         if (!userRepository.existsById(userId))
             return new ResponseEntity<>(new AppError(HttpStatus.NOT_FOUND.value(), "User not found"), HttpStatus.NOT_FOUND);
         if (!dictionaryRepository.existsById(dictionaryId))
             return new ResponseEntity<>(new AppError(HttpStatus.NOT_FOUND.value(), "Dictionary not found"), HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(dictionaryRepository.findById(dictionaryId), HttpStatus.OK);
+
+        Key key = new Key(keyRequest.getKey());
+        keyRepository.save(key);
+        dictionaryRepository.findById(dictionaryId).get().getKeys().add(key);
+        dictionaryRepository.save(dictionaryRepository.findById(dictionaryId).get());
+
+        return ResponseEntity.ok(new MessageResponse("Key CREATED"));
     }
 
-    public ResponseEntity<?> findValueByKey(long userId, long dictionaryId, long keyId){
+    public ResponseEntity<?> createValue(long userId, long dictionaryId, long keyId, ValueRequest valueRequest) {
         if (!userRepository.existsById(userId))
             return new ResponseEntity<>(new AppError(HttpStatus.NOT_FOUND.value(), "User not found"), HttpStatus.NOT_FOUND);
         if (!dictionaryRepository.existsById(dictionaryId))
             return new ResponseEntity<>(new AppError(HttpStatus.NOT_FOUND.value(), "Dictionary not found"), HttpStatus.NOT_FOUND);
         if(!keyRepository.existsById(keyId))
             return new ResponseEntity<>(new AppError(HttpStatus.NOT_FOUND.value(), "Key not found"), HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(valueRepository.findById(keyId), HttpStatus.OK);
+
+        Value value = new Value(valueRequest.getValue());
+        valueRepository.save(value);
+        keyRepository.findById(keyId).get().getValues().add(value);
+        keyRepository.save(keyRepository.findById(keyId).get());
+
+        return ResponseEntity.ok(new MessageResponse("Value CREATED"));
     }
 }

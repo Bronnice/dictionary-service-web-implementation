@@ -2,6 +2,7 @@ package com.web.dictionaryservice.dictionaryservicewebimplementation.service;
 
 import com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.SignUpValidator;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.ValidationResult;
+import com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.Validator;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.configs.jwt.JwtUtils;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.model.ERole;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.model.Role;
@@ -86,6 +87,13 @@ public class AuthService {
                                         )
                                 ))));
         ValidationResult validationResult = signUpValidator.apply(signupRequest);
+
+        //Fields validation
+        if (!validationResult.getIsValid()) {
+            return ResponseEntity
+                    .badRequest()
+                    .body(new MessageResponse("Error: " + validationResult.getErrorMessage()));
+        }
         //Username checking
         if (userRepository.existsByUsername(signupRequest.getUsername())) {
             return ResponseEntity
@@ -98,12 +106,6 @@ public class AuthService {
             return ResponseEntity
                     .badRequest()
                     .body(new MessageResponse("Error: " + HttpStatus.BAD_REQUEST.value() + " Email exists"));
-        }
-
-        if (!validationResult.getIsValid()) {
-            return ResponseEntity
-                    .badRequest()
-                    .body(new MessageResponse("Error: " + validationResult.getErrorMessage()));
         }
 
         User user = new User(signupRequest.getUsername(),
