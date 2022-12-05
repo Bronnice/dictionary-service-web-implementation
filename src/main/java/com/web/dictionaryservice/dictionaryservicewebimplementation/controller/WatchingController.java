@@ -28,10 +28,10 @@ public class WatchingController {
         return watchingService.getDictionaryById(user, dictionary);
     }
 
-    @GetMapping(path = "/{user_id}/dictionaries/{dictionary_id}/{key_id}")
+    @GetMapping(path = "/{user_id}/dictionaries/{dictionary_id}/{key}")
     public ResponseEntity<?> findValueByKey(@PathVariable(value = "user_id") User user,
                                         @PathVariable(value = "dictionary_id") Dictionary dictionary,
-                                        @PathVariable(value = "key_id") Key key){
+                                        @PathVariable(value = "key") Key key){
         return watchingService.findValueByKey(user, dictionary, key);
     }
 
