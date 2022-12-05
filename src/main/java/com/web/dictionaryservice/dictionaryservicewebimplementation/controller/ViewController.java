@@ -5,7 +5,7 @@ import com.web.dictionaryservice.dictionaryservicewebimplementation.model.Key;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.model.User;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.model.Value;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.repository.DictionaryRepository;
-import com.web.dictionaryservice.dictionaryservicewebimplementation.service.WatchingService;
+import com.web.dictionaryservice.dictionaryservicewebimplementation.service.ViewService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,26 +13,26 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequestMapping("/api/")
 @CrossOrigin(origins = "*", maxAge = 3600)
-public class WatchingController {
+public class ViewController {
     @Autowired
     private DictionaryRepository dictionaryRepository;
-    WatchingService watchingService;
+    ViewService viewService;
 
     @GetMapping(path = "/{user_id}/dictionaries")
     public ResponseEntity<?> getAllDictionaries(@PathVariable(value = "user_id")User user){
-        return watchingService.getAllDictionaries(user);
+        return viewService.getAllDictionaries(user);
     }
 
     @GetMapping(path = "/{user_id}/dictionaries/{dictionary_id}")
     public ResponseEntity<?> getDictionaryById(@PathVariable(value = "user_id") User user, @PathVariable(value = "dictionary_id") Dictionary dictionary){
-        return watchingService.getDictionaryById(user, dictionary);
+        return viewService.getDictionaryById(user, dictionary);
     }
 
     @GetMapping(path = "/{user_id}/dictionaries/{dictionary_id}/{key}")
     public ResponseEntity<?> findValueByKey(@PathVariable(value = "user_id") User user,
                                         @PathVariable(value = "dictionary_id") Dictionary dictionary,
                                         @PathVariable(value = "key") Key key){
-        return watchingService.findValueByKey(user, dictionary, key);
+        return viewService.findValueByKey(user, dictionary, key);
     }
 
     @GetMapping(path = "/{user_id}/dictionaries/{dictionary_id}/{key}/delete/{value_id}")
@@ -40,6 +40,6 @@ public class WatchingController {
                                             @PathVariable(value = "dictionary_id") Dictionary dictionary,
                                             @PathVariable(value = "key") Key key,
                                               @PathVariable(value = "value_id") Value value){
-        return watchingService.deleteValueByKey(user, dictionary, key, value);
+        return viewService.deleteValueByKey(user, dictionary, key, value);
     }
 }

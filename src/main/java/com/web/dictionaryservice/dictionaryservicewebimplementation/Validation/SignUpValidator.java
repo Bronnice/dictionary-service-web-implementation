@@ -14,7 +14,6 @@ public interface SignUpValidator extends Function<SignupRequest, ValidationResul
         return request -> predicate.test(request) ? valid() : invalid(message);
     }
 
-
     //Username validation
     static SignUpValidator usernameIsNotEmpty() {
         return holds(request -> !request.getUsername().trim().isEmpty(),

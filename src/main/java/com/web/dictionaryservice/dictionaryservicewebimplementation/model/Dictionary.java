@@ -18,7 +18,7 @@ public class Dictionary {
     private Long id;
 
     @JoinTable(name = "users", joinColumns = {@JoinColumn(name = "user_id", referencedColumnName = "id")})
-    private UUID user_id;
+    private Long user_id;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "keys_in_dictionary",
@@ -26,7 +26,7 @@ public class Dictionary {
             inverseJoinColumns = @JoinColumn(name = "key_id", referencedColumnName = "id"))
     private List<Key> keys = new ArrayList<>();
 
-    public Dictionary(UUID user_id) {
+    public Dictionary(Long user_id) {
         this.user_id = user_id;
     }
 }
