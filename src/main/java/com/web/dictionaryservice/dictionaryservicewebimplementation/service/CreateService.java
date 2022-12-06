@@ -1,11 +1,10 @@
 package com.web.dictionaryservice.dictionaryservicewebimplementation.service;
 
 import com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.CreateValidator;
+import com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.KeyValidator;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.ValidationResult;
-import com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.ViewValidator;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.model.Dictionary;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.model.Key;
-import com.web.dictionaryservice.dictionaryservicewebimplementation.model.User;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.model.Value;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.pojo.*;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.repository.DictionaryRepository;
@@ -18,7 +17,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 import static com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.CreateValidator.*;
+import static com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.KeyValidator.keyLength;
 
 @Service
 @Getter
@@ -54,14 +56,26 @@ public class CreateService {
         );
         ValidationResult validationResult = createValidator.apply(this);
 
+        KeyValidator keyValidator = keyLength(10);
+        ValidationResult validationResult2 = keyValidator.apply(keyRequest);
+
         if(!validationResult.getIsValid()){
             return ResponseEntity.badRequest().body(new MessageResponse("Error: " + validationResult.getErrorMessage()));
+        }
+        if(!validationResult2.getIsValid()){
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: " + validationResult2.getErrorMessage()));
         }
 
         Key key = new Key(keyRequest.getKey());
         keyRepository.save(key);
-        dictionaryRepository.findById(dictionaryId).get().getKeys().add(key);
-        dictionaryRepository.save(dictionaryRepository.findById(dictionaryId).get());
+
+        Optional<Dictionary> dictionary = dictionaryRepository.findById(dictionaryId);
+        try {
+            dictionary.ifPresent(dic -> dic.getKeys().add(key));
+            dictionaryRepository.save(dictionary.get());
+        }catch (NullPointerException e){
+            return ResponseEntity.badRequest().body(new MessageResponse(HttpStatus.BAD_REQUEST.value() + " Key is null"));
+        }
 
         return ResponseEntity.ok(new MessageResponse("Key CREATED"));
     }
