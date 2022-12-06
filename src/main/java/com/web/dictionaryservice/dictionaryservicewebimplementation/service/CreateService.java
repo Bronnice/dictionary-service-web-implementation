@@ -1,5 +1,8 @@
 package com.web.dictionaryservice.dictionaryservicewebimplementation.service;
 
+import com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.CreateValidator;
+import com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.ValidationResult;
+import com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.ViewValidator;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.model.Dictionary;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.model.Key;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.model.User;
@@ -9,13 +12,16 @@ import com.web.dictionaryservice.dictionaryservicewebimplementation.repository.D
 import com.web.dictionaryservice.dictionaryservicewebimplementation.repository.KeyRepository;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.repository.UserRepository;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.repository.ValueRepository;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-///TODO Sane validation
+import static com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.CreateValidator.*;
+
 @Service
+@Getter
 public class CreateService {
 
     @Autowired
@@ -27,11 +33,15 @@ public class CreateService {
     @Autowired
     ValueRepository valueRepository;
 
-    public ResponseEntity<?> createDictionary(User user, DictionaryRequest dictionaryRequest){
-        if (!userRepository.existsById(user.getId()))
-            return new ResponseEntity<>(new AppError(HttpStatus.NOT_FOUND.value(), "User not found"), HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> createDictionary(long userId, DictionaryRequest dictionaryRequest){
+        CreateValidator createValidator = userExists(userId);
+        ValidationResult validationResult = createValidator.apply(this);
 
-        Dictionary dictionary = new Dictionary(dictionaryRequest.getName(), user.getId());
+        if(!validationResult.getIsValid()){
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: " + validationResult.getErrorMessage()));
+        }
+
+        Dictionary dictionary = new Dictionary(dictionaryRequest.getName(), userId);
         dictionaryRepository.save(dictionary);
 
         return ResponseEntity.ok(new MessageResponse("Dictionary CREATED"));
@@ -39,10 +49,14 @@ public class CreateService {
 
 
     public ResponseEntity<?> createKey(long userId, long dictionaryId, KeyRequest keyRequest) {
-        if (!userRepository.existsById(userId))
-            return new ResponseEntity<>(new AppError(HttpStatus.NOT_FOUND.value(), "User not found"), HttpStatus.NOT_FOUND);
-        if (!dictionaryRepository.existsById(dictionaryId))
-            return new ResponseEntity<>(new AppError(HttpStatus.NOT_FOUND.value(), "Dictionary not found"), HttpStatus.NOT_FOUND);
+        CreateValidator createValidator = userExists(userId).and(
+                dictionaryExists(dictionaryId)
+        );
+        ValidationResult validationResult = createValidator.apply(this);
+
+        if(!validationResult.getIsValid()){
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: " + validationResult.getErrorMessage()));
+        }
 
         Key key = new Key(keyRequest.getKey());
         keyRepository.save(key);
@@ -53,12 +67,16 @@ public class CreateService {
     }
 
     public ResponseEntity<?> createValue(long userId, long dictionaryId, long keyId, ValueRequest valueRequest) {
-        if (!userRepository.existsById(userId))
-            return new ResponseEntity<>(new AppError(HttpStatus.NOT_FOUND.value(), "User not found"), HttpStatus.NOT_FOUND);
-        if (!dictionaryRepository.existsById(dictionaryId))
-            return new ResponseEntity<>(new AppError(HttpStatus.NOT_FOUND.value(), "Dictionary not found"), HttpStatus.NOT_FOUND);
-        if(!keyRepository.existsById(keyId))
-            return new ResponseEntity<>(new AppError(HttpStatus.NOT_FOUND.value(), "Key not found"), HttpStatus.NOT_FOUND);
+        CreateValidator createValidator = userExists(userId).and(
+                dictionaryExists(dictionaryId).and(
+                       keyExists(keyId)
+                )
+        );
+        ValidationResult validationResult = createValidator.apply(this);
+
+        if(!validationResult.getIsValid()){
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: " + validationResult.getErrorMessage()));
+        }
 
         Value value = new Value(valueRequest.getValue());
         valueRepository.save(value);

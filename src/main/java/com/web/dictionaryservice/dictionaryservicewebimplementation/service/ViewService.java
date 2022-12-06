@@ -1,5 +1,7 @@
 package com.web.dictionaryservice.dictionaryservicewebimplementation.service;
 
+import com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.ValidationResult;
+import com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.ViewValidator;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.model.Dictionary;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.model.Key;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.model.User;
@@ -10,6 +12,7 @@ import com.web.dictionaryservice.dictionaryservicewebimplementation.repository.D
 import com.web.dictionaryservice.dictionaryservicewebimplementation.repository.KeyRepository;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.repository.UserRepository;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.repository.ValueRepository;
+import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,9 +21,11 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.ViewValidator.*;
 import static org.springframework.http.ResponseEntity.badRequest;
 
 @Service
+@Getter
 public class ViewService {
 
     @Autowired
@@ -34,8 +39,12 @@ public class ViewService {
 
     public ResponseEntity<?> getAllDictionaries(long userId) {
 
-        if (!userRepository.existsById(userId))
-            return ResponseEntity.badRequest().body(new MessageResponse(HttpStatus.NOT_FOUND.value() + " User not found"));
+        ViewValidator viewValidator = userExists(userId);
+        ValidationResult validationResult = viewValidator.apply(this);
+
+        if(!validationResult.getIsValid()){
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: " + validationResult.getErrorMessage()));
+        }
 
         List<Dictionary> tempDic = new ArrayList<>();
         for (Dictionary item : dictionaryRepository.findAll()) {
@@ -47,20 +56,25 @@ public class ViewService {
     }
 
     public ResponseEntity<?> getDictionaryById(long userId, long dictionaryId) {
-        if (!userRepository.existsById(userId))
-            return new ResponseEntity<>(new AppError(HttpStatus.NOT_FOUND.value(), "User not found"), HttpStatus.NOT_FOUND);
-        if (!dictionaryRepository.existsById(dictionaryId))
-            return new ResponseEntity<>(new AppError(HttpStatus.NOT_FOUND.value(), "Dictionary not found"), HttpStatus.NOT_FOUND);
+        ViewValidator viewValidator = userExists(userId).and(dictionaryExists(dictionaryId));
+        ValidationResult validationResult = viewValidator.apply(this);
+
+        if(!validationResult.getIsValid()){
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: " + validationResult.getErrorMessage()));
+        }
         return new ResponseEntity<>(dictionaryRepository.findById(dictionaryId), HttpStatus.OK);
     }
 
     public ResponseEntity<?> findValueByKey(long userId, long dictionaryId, long keyId){
-        if (!userRepository.existsById(userId))
-            return new ResponseEntity<>(new AppError(HttpStatus.NOT_FOUND.value(), "User not found"), HttpStatus.NOT_FOUND);
-        if (!dictionaryRepository.existsById(dictionaryId))
-            return new ResponseEntity<>(new AppError(HttpStatus.NOT_FOUND.value(), "Dictionary not found"), HttpStatus.NOT_FOUND);
-        if(!keyRepository.existsById(keyId))
-            return new ResponseEntity<>(new AppError(HttpStatus.NOT_FOUND.value(), "Key not found"), HttpStatus.NOT_FOUND);
-        return new ResponseEntity<>(valueRepository.findById(keyId), HttpStatus.OK);
+        ViewValidator viewValidator = userExists(userId).and(
+                dictionaryExists(dictionaryId).and(
+                        keyExists(keyId)));
+        ValidationResult validationResult = viewValidator.apply(this);
+
+        if(!validationResult.getIsValid()){
+            return ResponseEntity.badRequest().body(new MessageResponse("Error: " + validationResult.getErrorMessage()));
+        }
+
+        return new ResponseEntity<>(keyRepository.findById(keyId), HttpStatus.OK);
     }
 }

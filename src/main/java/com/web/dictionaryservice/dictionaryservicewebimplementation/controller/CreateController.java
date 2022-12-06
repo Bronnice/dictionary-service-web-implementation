@@ -18,8 +18,8 @@ public class CreateController {
     CreateService createService;
 
     @PostMapping(path = "/{user_id}/dictionaries/")
-    public ResponseEntity<?> createDictionary(@PathVariable(value = "user_id") User user, @RequestBody DictionaryRequest dictionaryRequest){
-        return createService.createDictionary(user, dictionaryRequest);
+    public ResponseEntity<?> createDictionary(@PathVariable(value = "user_id") long userId, @RequestBody DictionaryRequest dictionaryRequest){
+        return createService.createDictionary(userId, dictionaryRequest);
     }
 
     @PostMapping(path = "/{user_id}/dictionaries/{dictionary_id}")

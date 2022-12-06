@@ -32,7 +32,7 @@ public class ViewController {
     @GetMapping(path = "/{user_id}/dictionaries/{dictionary_id}/{key_id}")
     public ResponseEntity<?> findValueByKey(@PathVariable(value = "user_id") long userId,
                                             @PathVariable(value = "dictionary_id") long dictionaryId,
-                                            @PathVariable(value = "key") long keyId){
+                                            @PathVariable(value = "key_id") long keyId){
         return viewService.findValueByKey(userId, dictionaryId, keyId);
     }
 
