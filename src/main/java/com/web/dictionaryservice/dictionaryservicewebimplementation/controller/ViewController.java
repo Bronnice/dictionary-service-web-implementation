@@ -20,12 +20,12 @@ public class ViewController {
         return viewService.getAllDictionaries(user_id);
     }
 
-    @GetMapping(path = "/{user_id}/dictionaries/{dictionary_id}")
+    @GetMapping(path = "/users/{user_id}/dictionaries/{dictionary_id}")
     public ResponseEntity<?> getDictionaryById(@PathVariable(value = "user_id") long user_id, @PathVariable(value = "dictionary_id") long dictionary_id){
         return viewService.getDictionaryById(user_id, dictionary_id);
     }
 
-    @GetMapping(path = "/{user_id}/dictionaries/{dictionary_id}/{key_id}")
+    @GetMapping(path = "/users/{user_id}/dictionaries/{dictionary_id}/{key_id}")
     public ResponseEntity<?> findValueByKey(@PathVariable(value = "user_id") long userId,
                                             @PathVariable(value = "dictionary_id") long dictionaryId,
                                             @PathVariable(value = "key_id") long keyId){
