@@ -33,7 +33,7 @@ public interface KeyValidator extends Validator<Dictionary> {
                         HttpStatus.BAD_REQUEST.value() + " Key contains letters");
             }
         }
-
+            return (KeyValidator) invalid(HttpStatus.BAD_REQUEST.value() + " Key contains letters");
     }
 
     default KeyValidator and(KeyValidator other) {
