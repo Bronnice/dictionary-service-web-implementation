@@ -1,6 +1,5 @@
 package com.web.dictionaryservice.dictionaryservicewebimplementation.controller;
 
-import com.web.dictionaryservice.dictionaryservicewebimplementation.model.User;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.pojo.DictionaryRequest;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.pojo.KeyRequest;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.pojo.ValueRequest;

@@ -3,6 +3,7 @@ package com.web.dictionaryservice.dictionaryservicewebimplementation.service;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.CreateValidator;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.KeyValidator;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.ValidationResult;
+import com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.WordType;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.model.Dictionary;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.model.Key;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.model.Value;
@@ -21,6 +22,7 @@ import java.util.Optional;
 
 import static com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.CreateValidator.*;
 import static com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.KeyValidator.keyLength;
+import static com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.KeyValidator.keyWordType;
 
 @Service
 @Getter
@@ -43,7 +45,12 @@ public class CreateService {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: " + validationResult.getErrorMessage()));
         }
 
-        Dictionary dictionary = new Dictionary(dictionaryRequest.getName(), userId);
+        KeyValidator validator = keyLength(dictionaryRequest.getKeyLength()).and(
+                keyWordType(dictionaryRequest.getWordType())
+        );
+
+        Dictionary dictionary = new Dictionary(dictionaryRequest.getName(), userId, validator);
+        ValidationResult validationResult2 = validator.apply(dictionary);
         dictionaryRepository.save(dictionary);
 
         return ResponseEntity.ok(new MessageResponse("Dictionary CREATED"));
@@ -56,14 +63,8 @@ public class CreateService {
         );
         ValidationResult validationResult = createValidator.apply(this);
 
-        KeyValidator keyValidator = keyLength(10);
-        ValidationResult validationResult2 = keyValidator.apply(keyRequest);
-
         if(!validationResult.getIsValid()){
             return ResponseEntity.badRequest().body(new MessageResponse("Error: " + validationResult.getErrorMessage()));
-        }
-        if(!validationResult2.getIsValid()){
-            return ResponseEntity.badRequest().body(new MessageResponse("Error: " + validationResult2.getErrorMessage()));
         }
 
         Key key = new Key(keyRequest.getKey());
@@ -71,8 +72,12 @@ public class CreateService {
 
         Optional<Dictionary> dictionary = dictionaryRepository.findById(dictionaryId);
         try {
-            dictionary.ifPresent(dic -> dic.getKeys().add(key));
-            dictionaryRepository.save(dictionary.get());
+            if(dictionary.isPresent()){
+                Dictionary dic = dictionary.get();
+                dic.getKeys().add(key);
+                dictionaryRepository.save(dic);
+            }
+
         }catch (NullPointerException e){
             return ResponseEntity.badRequest().body(new MessageResponse(HttpStatus.BAD_REQUEST.value() + " Key is null"));
         }
@@ -94,8 +99,18 @@ public class CreateService {
 
         Value value = new Value(valueRequest.getValue());
         valueRepository.save(value);
-        keyRepository.findById(keyId).get().getValues().add(value);
-        keyRepository.save(keyRepository.findById(keyId).get());
+
+        Optional<Key> key = keyRepository.findById(keyId);
+        try {
+            if(key.isPresent()){
+                Key tempKey = key.get();
+                tempKey.getValues().add(value);
+                keyRepository.save(tempKey);
+            }
+
+        }catch (NullPointerException e){
+            return ResponseEntity.badRequest().body(new MessageResponse(HttpStatus.BAD_REQUEST.value() + " Value is null"));
+        }
 
         return ResponseEntity.ok(new MessageResponse("Value CREATED"));
     }

@@ -2,7 +2,6 @@ package com.web.dictionaryservice.dictionaryservicewebimplementation.service;
 
 import com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.SignUpValidator;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.ValidationResult;
-import com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.Validator;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.configs.jwt.JwtUtils;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.model.ERole;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.model.Role;

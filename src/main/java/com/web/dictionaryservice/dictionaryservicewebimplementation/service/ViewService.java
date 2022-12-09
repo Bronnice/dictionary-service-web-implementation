@@ -3,10 +3,6 @@ package com.web.dictionaryservice.dictionaryservicewebimplementation.service;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.ValidationResult;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.ViewValidator;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.model.Dictionary;
-import com.web.dictionaryservice.dictionaryservicewebimplementation.model.Key;
-import com.web.dictionaryservice.dictionaryservicewebimplementation.model.User;
-import com.web.dictionaryservice.dictionaryservicewebimplementation.model.Value;
-import com.web.dictionaryservice.dictionaryservicewebimplementation.pojo.AppError;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.pojo.MessageResponse;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.repository.DictionaryRepository;
 import com.web.dictionaryservice.dictionaryservicewebimplementation.repository.KeyRepository;
@@ -22,7 +18,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static com.web.dictionaryservice.dictionaryservicewebimplementation.Validation.ViewValidator.*;
-import static org.springframework.http.ResponseEntity.badRequest;
 
 @Service
 @Getter
@@ -46,10 +41,10 @@ public class ViewService {
             return ResponseEntity.badRequest().body(new MessageResponse("Error: " + validationResult.getErrorMessage()));
         }
 
-        List<Dictionary> tempDic = new ArrayList<>();
+        List<String> tempDic = new ArrayList<>();
         for (Dictionary item : dictionaryRepository.findAll()) {
             if(item.getUser_id().equals(userId))
-                tempDic.add(item);
+                tempDic.add(item.getName());
         }
 
         return new ResponseEntity<>(tempDic, HttpStatus.OK);
